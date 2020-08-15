@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
-from api.handlers import film_query
+from api.handlers.film_query import on_movie_request
+from api.cache import cache
+
 from utils import logger
 
 ghibli = Blueprint('sennder', __name__)
@@ -25,5 +27,5 @@ def index():
 @ghibli.route('/v1/movies', methods=['GET'])
 def movies():
     log.info("Processing request on movies")
-    response = film_query.on_movie_request(request)
+    response = on_movie_request(request)
     return jsonify(response), 200
