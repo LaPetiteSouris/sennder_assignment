@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import os
 import vcr
 import requests
 from urllib.parse import urljoin
 from flask_testing import LiveServerTestCase
 
 from api.server import app
+
+fixtures_path = os.path.join(os.path.dirname(__file__), '__fixtures__')
 
 
 class TestInternalAPI(LiveServerTestCase):
@@ -16,7 +19,7 @@ class TestInternalAPI(LiveServerTestCase):
         app.config['LIVESERVER_TIMEOUT'] = 10
         return app
 
-    @vcr.use_cassette()
+    @vcr.use_cassette(cassette_library_dir=fixtures_path)
     def test_server_is_up_and_running(self):
         # Movie endpoint
         base_url = self.get_server_url()
