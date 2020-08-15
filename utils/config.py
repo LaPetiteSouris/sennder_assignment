@@ -14,9 +14,9 @@ if os.environ.get("CACHE") == "IN_MEMORY":
     }
 
 EXTERNAL_API_CONFIG = {
-    "URL": os.environ.get("STUDIO_URL", "https://ghibliapi.herokuapp.com"),
-    "MOVIE_URL": os.environ.get("MOVIE_URL", "/films"),
-    "PEOPLE_URL": os.environ.get("PEOPLE_URL", "/people"),
+    "URL": os.environ.get("STUDIO_URL"),
+    "MOVIE_URL": os.environ.get("MOVIE_URL"),
+    "PEOPLE_URL": os.environ.get("PEOPLE_URL"),
 }
 
 LOG_DEFAULT_LEVEL = "info"

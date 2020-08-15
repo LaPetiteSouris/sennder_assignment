@@ -14,6 +14,6 @@ services:
       - CACHE_REDIS_PORT=6379
       - STUDIO_URL="https://ghibliapi.herokuapp.com"
       - MOVIE_URL="/films"
-      - PEOPLE_URL="people"
+      - PEOPLE_URL="/people"
     links:
       - 'redis'
