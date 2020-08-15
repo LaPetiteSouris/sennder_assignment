@@ -7,7 +7,7 @@ from flask import Flask
 from api import config
 from api.errors.error_handler import error_handler_api
 from api.routes import ghibli
-from api.utils import logger
+from utils import logger
 
 log = logger.define_logger('API started')
 

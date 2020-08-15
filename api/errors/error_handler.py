@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify
 
 from api.errors.api_exception import NotImplementedException, \
     UnauthorizedException
-from api.utils import logger
+from utils import logger
 
 error_handler_api = Blueprint('error_handler_api', __name__)
 log = logger.define_logger('error handler api')

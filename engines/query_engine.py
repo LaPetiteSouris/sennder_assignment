@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from utils import logger
-from engines.query_engine import fetch_data_from_ghibli
+from engines.fetch_external_api.fetch_helper import GhibliAPI
 log = logger.define_logger(__name__)
 
 
@@ -37,5 +37,14 @@ def build_revert_index_from_people_to_movie(film_data, people_data):
     return films_to_people_index
 
 
-def on_movie_request(req_body):
-    return fetch_data_from_ghibli()
+def fetch_data_from_ghibli(params=None):
+    ghibli_api = GhibliAPI(base_url="https://ghibliapi.herokuapp.com")
+    # Fetch films data
+    film_data = ghibli_api.get_all_films()
+    # Fetch people data
+    people_data = ghibli_api.get_all_people()
+    log.info(
+        "Successfully fetched film data and people data from external server")
+    joined_film_people = build_revert_index_from_people_to_movie(
+        film_data, people_data)
+    return joined_film_people

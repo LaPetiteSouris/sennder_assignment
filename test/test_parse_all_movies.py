@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from api.handlers.film_query import build_revert_index_from_people_to_movie, \
+from engines.query_engine import build_revert_index_from_people_to_movie, \
     get_film_id_from_url, build_film_index
 
 sample_get_all_films_response = [{

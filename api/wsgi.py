@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from api import config
 from api.server import app
-from api.utils import logger
+from utils import logger
 
 log = logger.define_logger(__name__)
 
