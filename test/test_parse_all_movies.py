@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from api.handlers.film_query import join_movies_and_people, \
+from api.handlers.film_query import build_revert_index_from_people_to_movie, \
     get_film_id_from_url, build_film_index
 
 sample_get_all_films_response = [{
@@ -18,6 +18,14 @@ sample_get_all_films_response = [{
     "producer": "Hollywood",
     "release_date": "2010",
     "rt_score": "95"
+}, {
+    "id": "id_of_a_random_film",
+    "title": "Somthing that should not be made",
+    "description": "This film should have not been made",
+    "director": "Just a random guy",
+    "producer": "Just a random producer",
+    "release_date": "1320",
+    "rt_score": "0.00001"
 }]
 
 sample_get_all_people_response = [{
@@ -62,6 +70,14 @@ sample_get_all_people_response = [{
     "hair_color":
     "brown",
     "films": ["https://ghibliapi.herokuapp.com/films/id_of_film_harry_potter"],
+}, {
+    "id": "id_of_mr_john_smith",
+    "name": "John Smith",
+    "gender": "male",
+    "age": "late teens",
+    "eye_color": "brown",
+    "hair_color": "brown",
+    "films": [],
 }]
 
 
@@ -96,6 +112,15 @@ def test_build_film_index():
             "producer": "Tohei Animation",
             "release_date": "2010",
             "rt_score": "95"
+        },
+        "id_of_a_random_film": {
+            "id": "id_of_a_random_film",
+            "title": "Somthing that should not be made",
+            "description": "This film should have not been made",
+            "director": "Just a random guy",
+            "producer": "Just a random producer",
+            "release_date": "1320",
+            "rt_score": "0.00001"
         }
     }
     assert index == expected_results
@@ -108,7 +133,7 @@ def test_join_movies_with_people():
     # and Harry Potter
 
     # Perform the join of 2 datasets
-    joined_movies_people_data = join_movies_and_people(
+    joined_movies_people_data = build_revert_index_from_people_to_movie(
         sample_get_all_films_response, sample_get_all_people_response)
 
     # Expect that Vinsmoke Sanji and Monkey D.Luffy are in One Piece film
@@ -155,6 +180,19 @@ def test_join_movies_with_people():
                     "name": "Harry Potter",
                 }
             }
+        },
+        # The film does not have any related people involved
+        # no data
+        "id_of_a_random_film": {
+            "id": "id_of_a_random_film",
+            "title": "Somthing that should not be made",
+            "description": "This film should have not been made",
+            "director": "Just a random guy",
+            "producer": "Just a random producer",
+            "release_date": "1320",
+            "rt_score": "0.00001",
+            # There is no people field for this one
+            # as there is no people involved
         }
     }
 
@@ -195,3 +233,16 @@ def test_join_movies_with_people():
         "id": "id_of_harry_potter",
         "name": "Harry Potter",
     }
+
+    # Expect no people data  is filled in for
+    # the film that has no related data
+    set_of_people = joined_movies_people_data.get("id_of_a_random_film",
+                                                  {}).get("people")
+
+    assert set_of_people is None
+
+    # Expect that Mr.John Smith is NOT present
+    # in any film
+
+    for _, film in joined_movies_people_data.items():
+        assert film.get("people", {}).get("id_of_mr_john_smith") is None

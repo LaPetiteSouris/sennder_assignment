@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
 from api.handlers import template_handler
-from utils import logger
+from api.utils import logger
 
 ghibli = Blueprint('sennder', __name__)
 log = logger.define_logger(__name__)
