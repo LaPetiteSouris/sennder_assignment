@@ -11,7 +11,7 @@ class GhibliAPI(object):
         self.auth = auth
 
     @staticmethod
-    def get_data_from_url(url, params):
+    def get_data_from_url(url, params=None):
         response = requests.get(url, params=params)
         if response.status_code == 200:
             return json.loads(response.text)

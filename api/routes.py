@@ -1,18 +1,29 @@
 # -*- coding: utf-8 -*-
 from flask import Blueprint, jsonify, request
-from api.handlers import template_handler
+from api.handlers import film_query
 from api.utils import logger
 
 ghibli = Blueprint('sennder', __name__)
 log = logger.define_logger(__name__)
 
 
-@ghibli.route('v1/ping', methods=['GET'])
+@ghibli.before_request
+def pre_request_logging():
+    # Logging statement
+    log.info("Processing request",
+             remote_addr=request.remote_addr,
+             url=request.url,
+             data=request.data,
+             method=request.method)
+
+
+@ghibli.route('/v1/ping', methods=['GET'])
 def index():
     return jsonify({'response': 'pong'}), 200
 
 
-@ghibli.route('v1/template', methods=['GET'])
-def template():
-    response = template_handler.on_request(request)
+@ghibli.route('/v1/movies', methods=['GET'])
+def movies():
+    log.info("Processing request on movies")
+    response = film_query.on_movie_request(request)
     return jsonify(response), 200

@@ -1,25 +1,32 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
-import json_log_formatter
-ENV = os.getenv('ENV', 'dev')
+
+import structlog
+
+LOG_DEFAULT_LEVEL = 'info'
 
 
-def define_logger(log_component='no name'):
-    """ Define a  logger with 3 default levels
+def _log_factory(handler, level, namespace):
+    """ Opinionated logger factory. """
+    logger = logging.getLogger(namespace)
+    logger.setLevel(level)
+    if not logger.handlers:
+        logger.addHandler(handler)
 
-    :param log_component: name of the component which generates the log
-    :return: logger object
-    """
-    logger = logging.getLogger(log_component)
+    return structlog.wrap_logger(
+        logger,
+        processors=[
+            structlog.stdlib.filter_by_level, structlog.stdlib.add_log_level,
+            structlog.stdlib.add_logger_name,
+            structlog.processors.TimeStamper(fmt='iso',
+                                             utc=True,
+                                             key='created_at'),
+            structlog.processors.JSONRenderer()
+        ])
 
-    handler = logging.StreamHandler()
-    formatter = json_log_formatter.JSONFormatter()
-    handler.setFormatter(formatter)
 
-    logger.addHandler(handler)
-    if ENV == 'dev':
-        logger.setLevel(logging.DEBUG)
-    logger.setLevel(logging.INFO)
-
-    return logger
+def define_logger(namespace=__name__, level=None):
+    """ Configure and provide a structured logger. """
+    level = level or os.environ.get('LOG_LEVEL', LOG_DEFAULT_LEVEL)
+    return _log_factory(logging.StreamHandler(), level.upper(), namespace)

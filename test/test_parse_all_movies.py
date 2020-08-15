@@ -153,7 +153,7 @@ def test_join_movies_with_people():
             "rt_score": "95",
             # Expect field people to be filled with
             # Monkey D.Luffy and Vinsmoke Sanji
-            "people": {
+            "people_involved": {
                 "id_of_monkey_dluffy": {
                     "id": "id_of_monkey_dluffy",
                     "name": "Monkey D. Luffy",
@@ -174,7 +174,7 @@ def test_join_movies_with_people():
             "rt_score": "95",
             # Expect field people to be filled with
             # Harry Potter
-            "people": {
+            "people_involved": {
                 "id_of_harry_potter": {
                     "id": "id_of_harry_potter",
                     "name": "Harry Potter",
@@ -206,7 +206,7 @@ def test_join_movies_with_people():
     # Monkey D.Luffy and Vinsmoke Sanji
     # Search for Luffy
     set_of_people = joined_movies_people_data.get("if_of_film_one_piece",
-                                                  {}).get("people")
+                                                  {}).get("people_involved")
 
     person = set_of_people.get("id_of_monkey_dluffy")
     # Luffy should be in the list
@@ -226,7 +226,7 @@ def test_join_movies_with_people():
     # Expect field people to be filled with
     # Harry Potter
     set_of_people = joined_movies_people_data.get("id_of_film_harry_potter",
-                                                  {}).get("people")
+                                                  {}).get("people_involved")
     person = set_of_people.get("id_of_harry_potter")
     # Mr.Potter should be in the list
     assert person == {
@@ -237,7 +237,7 @@ def test_join_movies_with_people():
     # Expect no people data  is filled in for
     # the film that has no related data
     set_of_people = joined_movies_people_data.get("id_of_a_random_film",
-                                                  {}).get("people")
+                                                  {}).get("people_involved")
 
     assert set_of_people is None
 
@@ -245,4 +245,4 @@ def test_join_movies_with_people():
     # in any film
 
     for _, film in joined_movies_people_data.items():
-        assert film.get("people", {}).get("id_of_mr_john_smith") is None
+        assert film.get("people_involved", {}).get("id_of_mr_john_smith") is None
