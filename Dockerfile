@@ -1,16 +1,10 @@
-FROM python:3.5
+FROM python:3.7.3-slim
 
+COPY . /sennder
 
-ENV INSTALL_PATH /bookworm
-ENV URI 'http://bookworm_graph:ipbmX4LiLDcLHpM77RYX@hobby-knhkoomjfhocgbkeonmkpenl.dbs.graphenedb.com:24789/db/data/'
-RUN mkdir -p $INSTALL_PATH
+WORKDIR  /sennder
 
-WORKDIR $INSTALL_PATH
-
-COPY . .
-
-WORKDIR  "/bookworm"
-
-RUN pip install -r requirements.txt
-
-CMD gunicorn -b 0.0.0.0:3000 --access-logfile - "api.wsgi:app"
+RUN pip3 install -r requirements.txt
+RUN pwd 
+CMD gunicorn -b 0.0.0.0:3000 -w 2 --threads 2 --access-logfile - "api.wsgi:app"
+#CMD sleep 300

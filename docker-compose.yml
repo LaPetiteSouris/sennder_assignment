@@ -1,39 +1,19 @@
 version: '2'
 services:
-  neo4j:
-    image: 'neo4j:3.0.1'
-    restart: 'always'
-    ports:
-      - '7474:7474'
-      - '7687:7687'
-    volumes:
-      - '/var/lib/neo4j-data:/data'
-    environment:
-    - 'NEO4J_AUTH=none'
-
-  postgres:
-     image: 'postgres:latest'
-     restart: 'always'
-     volumes:
-      - '/var/lib/postgres-data:/data'
-     ports:
-      - '5432:5432'
-     environment:
-      - 'POSTGRES_PASSWORD: service'
-      - 'POSTGRES_USER: service'
+  redis:
+    image: redis
 
   app:
     stdin_open: true
     tty: true
     build: .
-    working_dir: '/bookworm'
-    volumes:
-      - '.:/bookworm'
     ports:
       - '3000:3000'
     environment:
-      - 'PYTHONPATH=/bookworm:/bookworm'
+      - CACHE_REDIS_HOST=redis
+      - CACHE_REDIS_PORT=6379
+      - STUDIO_URL="https://ghibliapi.herokuapp.com"
+      - MOVIE_URL="/films"
+      - PEOPLE_URL="people"
     links:
-      - 'neo4j'
-      - 'postgres'
-
+      - 'redis'

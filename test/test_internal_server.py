@@ -20,7 +20,6 @@ class TestInternalAPI(LiveServerTestCase):
         self.client = app.test_client()
         return app
 
-
     @vcr.use_cassette(cassette_library_dir=fixtures_path)
     def test_server_is_up_and_running(self):
         # Movie endpoint
@@ -41,8 +40,9 @@ class TestInternalAPI(LiveServerTestCase):
 
         # First hit should not be cached
         _ = self.client.get(full_url_movie)
+        mock_on_movie_request.assert_called_once()
 
-        mock_on_movie_request.assrt_called_once()
-        # second request, should be cached so the function
+        # Second hit should be cached so the function
         # on_movie_request should NOT be called
-        mock_on_movie_request.assrt_called_once()
+        _ = self.client.get(full_url_movie)
+        mock_on_movie_request.assert_called_once()

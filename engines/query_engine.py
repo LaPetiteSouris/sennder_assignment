@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-from utils import logger
+from utils import logger, config
 from engines.fetch_external_api.fetch_helper import GhibliAPI
 log = logger.define_logger(__name__)
+
+BASE_URL = config.EXTERNAL_API_CONFIG["URL"]
+MOVIE_URL = config.EXTERNAL_API_CONFIG["MOVIE_URL"]
+PEOPLE_URL = config.EXTERNAL_API_CONFIG["PEOPLE_URL"]
 
 
 def get_film_id_from_url(url):

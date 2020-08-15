@@ -3,8 +3,7 @@ import os
 import logging
 
 import structlog
-
-LOG_DEFAULT_LEVEL = 'info'
+from utils.config import LOG_DEFAULT_LEVEL
 
 
 def _log_factory(handler, level, namespace):

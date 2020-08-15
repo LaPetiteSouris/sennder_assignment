@@ -25,6 +25,7 @@ def index():
 
 
 @ghibli.route('/v1/movies', methods=['GET'])
+@cache.cached(timeout=60)
 def movies():
     log.info("Processing request on movies")
     response = on_movie_request(request)
