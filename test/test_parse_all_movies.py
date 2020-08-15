@@ -69,6 +69,42 @@ sample_get_all_people_response = [{
 }]
 
 
+def _search_for_person_in_list(person, list_of_people):
+    try:
+        return next(item for item in list_of_people if item["name"] == person)
+    except StopIteration:
+        return None
+
+
+def test_search_for_person_in_list():
+    # Given a list of people Vinsmoke Sanji and Monkey D. Luffy
+    list_of_people = [{
+        "id": "ba924631-068e-4436-b6de-f3283fa848f0",
+        "name": "Monkey D. Luffy",
+    }, {
+        "id": "a924631-068e-4436-b6de-f3283fa848g7",
+        "name": "Vinsmoke Sanji",
+    }]
+
+    # Search for Luffy
+    person = _search_for_person_in_list("Monkey D. Luffy", list_of_people)
+    assert person == {
+        "id": "ba924631-068e-4436-b6de-f3283fa848f0",
+        "name": "Monkey D. Luffy",
+    }
+
+    # Search for Sanji
+    person = _search_for_person_in_list("Vinsmoke Sanji", list_of_people)
+    assert person == {
+        "id": "a924631-068e-4436-b6de-f3283fa848g7",
+        "name": "Vinsmoke Sanji",
+    }
+
+    # Search for Mr.Totoro (not in list)
+    person = _search_for_person_in_list("Mr.Totoro", list_of_people)
+    assert person is None
+
+
 def test_join_movies_with_people():
     # Given sample data set
     # Films data set contain 2 films One Piece and Harry Potter
@@ -134,15 +170,41 @@ def test_join_movies_with_people():
             }]
         }
     }
+
+    # Expect the joined data set to contain identical amount of information
+    # with expected results (e.g : there should be 2 and ONLY 2 movies,
+    # one of them is Harry Potter and the other is One Piece)
+    assert set(joined_movies_people_data.keys()) == set(
+        expected_results.keys())
+
     # Expect field people to be filled with
     # Monkey D.Luffy and Vinsmoke Sanji
-    assert expected_results.get("2baf70d1-42bb-4437-b551-e5fed5a87abe"
-                                ) == joined_movies_people_data.get(
-                                    "2baf70d1-42bb-4437-b551-e5fed5a87abe")
-                                    
+    # Search for Luffy
+    list_of_people = joined_movies_people_data.get(
+        "2baf70d1-42bb-4437-b551-e5fed5a87abe", {}).get("people")
+
+    person = _search_for_person_in_list("Monkey D. Luffy", list_of_people)
+    # Luffy should be in the list
+    assert person == {
+        "id": "ba924631-068e-4436-b6de-f3283fa848f0",
+        "name": "Monkey D. Luffy",
+    }
+
+    # Search for Sanji
+    person = _search_for_person_in_list("Vinsmoke Sanji", list_of_people)
+    # Sanji should be in the list
+    assert person == {
+        "id": "a924631-068e-4436-b6de-f3283fa848g7",
+        "name": "Vinsmoke Sanji",
+    }
+
     # Expect field people to be filled with
     # Harry Potter
-    assert expected_results.get(
-        "2baf70d1-42bb-4437-b551-efghiklm"
-    ) == joined_movies_people_data.get(
-        "2baf70d1-42bb-4437-b551-e5fed5a87abe2baf70d1-42bb-4437-b551-efghiklm")
+    list_of_people = joined_movies_people_data.get(
+        "2baf70d1-42bb-4437-b551-efghiklm", {}).get("people")
+    person = _search_for_person_in_list("Harry Potter", list_of_people)
+    # Mr.Potter should be in the list
+    assert person == {
+        "id": "ba924631-068e-4436-b6de-f3283fa848f9",
+        "name": "Harry Potter",
+    }
