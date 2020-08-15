@@ -7,12 +7,12 @@ ghibli = Blueprint('sennder', __name__)
 log = logger.define_logger(__name__)
 
 
-@ghibli.route('/ping', methods=['GET'])
+@ghibli.route('v1/ping', methods=['GET'])
 def index():
     return jsonify({'response': 'pong'}), 200
 
 
-@ghibli.route('/template', methods=['GET'])
+@ghibli.route('v1/template', methods=['GET'])
 def template():
     response = template_handler.on_request(request)
     return jsonify(response), 200

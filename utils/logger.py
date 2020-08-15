@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
-
-import logmatic
+import json_log_formatter
 ENV = os.getenv('ENV', 'dev')
 
 
@@ -15,7 +14,8 @@ def define_logger(log_component='no name'):
     logger = logging.getLogger(log_component)
 
     handler = logging.StreamHandler()
-    handler.setFormatter(logmatic.JsonFormatter())
+    formatter = json_log_formatter.JSONFormatter()
+    handler.setFormatter(formatter)
 
     logger.addHandler(handler)
     if ENV == 'dev':

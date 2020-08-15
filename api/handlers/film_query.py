@@ -4,6 +4,10 @@ from utils import logger
 log = logger.define_logger(__name__)
 
 
-def on_request(req_body):
+def join_movies_and_people(movies, people):
+    return {}
+
+
+def on_film_request(req_body):
     # Parse info from request body
     return "Hello"
