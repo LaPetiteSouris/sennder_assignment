@@ -82,6 +82,7 @@ sample_get_all_people_response = [{
 
 
 def test_get_movie_id_from_url():
+    """ Test that film ID can be parsed from URI"""
     # Given an url to person
     url_movie = "https://ghibliapi.herokuapp.com/films/if_of_film_one_piece"
 
@@ -91,6 +92,10 @@ def test_get_movie_id_from_url():
 
 
 def test_build_film_index():
+    """ Test that from given data of all films
+    a hash table can be built, in which each key is the ID
+    of the film and content is the data
+    """
     # given sample film data
     # build hash table refer to film ID
     index = build_film_index(sample_get_all_films_response)
@@ -127,17 +132,22 @@ def test_build_film_index():
 
 
 def test_join_movies_with_people():
-    # Given sample data set
-    # Films data set contain 2 films One Piece and Harry Potter
-    # People data set contains 3 people, Monkey D.Luffy , Vinsmoke Sanji
-    # and Harry Potter
+    """ Test that given the structured data of all films and all people,
+    the 2 can be joined to a data set where each film contains data of
+    all involved people
+    """
+    # Given sample data sets
+    # Films data set contains 2 films One Piece and Harry Potter
+    # People data set contains 4 people, Monkey D.Luffy , Vinsmoke Sanji,
+    # Harry Potter and John Smith
 
     # Perform the join of 2 datasets
     joined_movies_people_data = build_revert_index_from_people_to_movie(
         sample_get_all_films_response, sample_get_all_people_response)
 
     # Expect that Vinsmoke Sanji and Monkey D.Luffy are in One Piece film
-    # Harry Potter is in Harry Potter film
+    # Harry Potter is in Harry Potter film.
+    # Also expect that Mr.John Smith is not present in any films.
 
     # Expected result should be in form of a dict (hashtable)
     # with key is the ID of film and content is the film data
@@ -197,12 +207,13 @@ def test_join_movies_with_people():
     }
 
     # Expect the joined data set to contain identical amount of information
-    # with expected results (e.g : there should be 2 and ONLY 2 films,
-    # one of them is Harry Potter and the other is One Piece)
+    # with expected results (e.g : there should be 3 and ONLY 3 films,
+    # one of them is Harry Potter, the other is One Piece and the last one
+    # is the film without any information)
     assert set(joined_movies_people_data.keys()) == set(
         expected_results.keys())
 
-    # Expect field people to be filled with
+    # Expect field people  of One Piece to be filled with
     # Monkey D.Luffy and Vinsmoke Sanji
     # Search for Luffy
     set_of_people = joined_movies_people_data.get("if_of_film_one_piece",
@@ -223,7 +234,7 @@ def test_join_movies_with_people():
         "name": "Vinsmoke Sanji",
     }
 
-    # Expect field people to be filled with
+    # Expect field people of film Harry Potter to be filled with
     # Harry Potter
     set_of_people = joined_movies_people_data.get("id_of_film_harry_potter",
                                                   {}).get("people_involved")
@@ -245,4 +256,5 @@ def test_join_movies_with_people():
     # in any film
 
     for _, film in joined_movies_people_data.items():
-        assert film.get("people_involved", {}).get("id_of_mr_john_smith") is None
+        assert film.get("people_involved",
+                        {}).get("id_of_mr_john_smith") is None

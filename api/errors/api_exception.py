@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 class NotImplementedException(Exception):
+    """ To raise on endpoints which are not yet supported"""
     status_code = 501
 
     def __init__(self, message, status_code=None, payload=None):
@@ -16,6 +17,7 @@ class NotImplementedException(Exception):
 
 
 class UnauthorizedException(Exception):
+    """ To raise on Unauthorized request"""
     status_code = 401
 
     def __init__(self, message, status_code=None, payload=None):
@@ -32,6 +34,7 @@ class UnauthorizedException(Exception):
 
 
 class ExternalAPIFetchError(Exception):
+    """ To raise on error when fetching data from external sources"""
     status_code = 503
 
     def __init__(self, message, status_code=None, payload=None):

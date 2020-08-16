@@ -11,7 +11,7 @@ log = logger.define_logger(__name__)
 
 @ghibli.before_request
 def pre_request_logging():
-    # Logging statement
+    # Logging statement for every request
     log.info("Processing request",
              remote_addr=request.remote_addr,
              url=request.url,
@@ -21,12 +21,14 @@ def pre_request_logging():
 
 @ghibli.route('/v1/ping', methods=['GET'])
 def index():
+    """ API Handshake """
     return jsonify({'response': 'pong'}), 200
 
 
 @ghibli.route('/v1/movies', methods=['GET'])
 @cache.cached(timeout=60)
 def movies():
+    """ Handle get all movies request """
     log.info("Processing request on movies")
     response = on_movie_request(request)
     return jsonify(response), 200

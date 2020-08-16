@@ -19,6 +19,8 @@ def _assert_correct_people_format(person):
 
 @vcr.use_cassette(cassette_library_dir=fixtures_path)
 def test_fetch_movie_from_external_api():
+    """ Test GhiblibAPI can fetch films data properly
+    """
     ghibli_api = GhibliAPI(base_url="https://ghibliapi.herokuapp.com")
     all_films = ghibli_api.get_all_films()
     map(_assert_correct_film_format, all_films)
@@ -26,6 +28,8 @@ def test_fetch_movie_from_external_api():
 
 @vcr.use_cassette(cassette_library_dir=fixtures_path)
 def test_fetch_people_from_external_api():
+    """ Test GhiblibAPI can fetch people data properly
+    """
     ghibli_api = GhibliAPI(base_url="https://ghibliapi.herokuapp.com")
     all_people = ghibli_api.get_all_people()
     map(_assert_correct_people_format, all_people)

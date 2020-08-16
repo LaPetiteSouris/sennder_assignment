@@ -12,4 +12,5 @@ app = Flask(__name__)
 app.register_blueprint(ghibli)
 app.register_blueprint(error_handler_api)
 
+# Initialize cache
 cache.init_app(app)
