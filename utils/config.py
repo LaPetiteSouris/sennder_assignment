@@ -15,12 +15,6 @@ if os.environ.get("CACHE") == "REDIS":
         "CACHE_TYPE": "redis",
     }
 
-EXTERNAL_API_CONFIG = {
-    "URL": os.environ.get("STUDIO_URL"),
-    "MOVIE_URL": os.environ.get("MOVIE_URL"),
-    "PEOPLE_URL": os.environ.get("PEOPLE_URL"),
-}
-
 LOG_DEFAULT_LEVEL = "info"
 
 if os.environ.get("ENV") == "DEV":

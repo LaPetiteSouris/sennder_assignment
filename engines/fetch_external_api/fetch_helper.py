@@ -3,6 +3,9 @@ import json
 import requests
 from urllib.parse import urljoin
 from api.errors.api_exception import ExternalAPIFetchError
+from utils import logger
+
+log = logger.define_logger(__name__)
 
 
 class GhibliAPI(object):
@@ -42,7 +45,7 @@ class GhibliAPI(object):
         raise ExternalAPIFetchError(
             "An error occurs upon fetching data from external service")
 
-    def get_all_films(self, film_url="/films"):
+    def get_all_films(self, film_url):
         """ Fetch all films from Ghilib Studio endpoints
 
         Args:
@@ -54,9 +57,10 @@ class GhibliAPI(object):
             in JSON format.
         """
         all_films_url = urljoin(self.base_url, film_url)
+        log.info("Fetching films from external URL", film_url=all_films_url)
         return self.get_data_from_url(all_films_url)
 
-    def get_all_people(self, film_url="/people"):
+    def get_all_people(self, people_url):
         """ Fetch all people from Ghilib Studio endpoints
 
         Args:
@@ -67,5 +71,8 @@ class GhibliAPI(object):
             response(json object): information of all people on Ghilib studio
             in JSON format.
         """
-        all_people_url = urljoin(self.base_url, film_url)
+        all_people_url = urljoin(self.base_url, people_url)
+        log.info("Fetching people from external URL",
+                 people_url=all_people_url)
+
         return self.get_data_from_url(all_people_url)

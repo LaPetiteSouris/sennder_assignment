@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from utils import logger, config
+from utils import logger
 from engines.fetch_external_api.fetch_helper import GhibliAPI
 log = logger.define_logger(__name__)
 
-BASE_URL = config.EXTERNAL_API_CONFIG["URL"]
-MOVIE_URL = config.EXTERNAL_API_CONFIG["MOVIE_URL"]
-PEOPLE_URL = config.EXTERNAL_API_CONFIG["PEOPLE_URL"]
+BASE_URL = "https://ghibliapi.herokuapp.com"
+MOVIE_URL = "/films"
+PEOPLE_URL = "/people"
 
 
 def get_film_id_from_url(url):
@@ -161,9 +161,9 @@ def fetch_data_from_ghibli(params=None):
     """
     ghibli_api = GhibliAPI(base_url=BASE_URL)
     # Fetch films data
-    film_data = ghibli_api.get_all_films()
+    film_data = ghibli_api.get_all_films(film_url=MOVIE_URL)
     # Fetch people data
-    people_data = ghibli_api.get_all_people()
+    people_data = ghibli_api.get_all_people(people_url=PEOPLE_URL)
     log.info(
         "Successfully fetched film data and people data from external server")
     joined_film_people = build_revert_index_from_people_to_movie(

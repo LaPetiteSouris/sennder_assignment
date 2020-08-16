@@ -14,9 +14,6 @@ Keep in mind the environment variables that have to be set
     - CACHE_REDIS_HOST=<redis_host>
     - CACHE_REDIS_PORT=<redis_port>
     - CACHE_REDIS_PASSWORD=<redis_password>
-    - STUDIO_URL="https://ghibliapi.herokuapp.com"
-    - MOVIE_URL="/films"
-    - PEOPLE_URL="/people"
 
 ```
 
@@ -62,17 +59,17 @@ pip3 install -r requirements-test.txt
 
 pytest -v 
 ```
-**NOTE**:  During the test execution, the programm will hit external API. Hitting external API everytime for test is considered to be a bad practice as:
+**NOTE**:  During the test execution, the programm will hit an external API. Hitting external API everytime for test is considered to be a bad practice as it would:
 - Increase execution time
 - Increase network IO
 - Make the test's behavior non-deterministic and flaky
 
-Also, mocking external API is considered a bad practice as well:
+Also, mocking external API is considered a bad practice as well as :
 - We should not mock what we do not own
 - It makes our tests to depend a lot of hypothesis.
 - Evolvement is difficult
 
-Thus, the package `vcrpy` is usded. This package record the reply of external API and replay it for future execution. You may notice tht a folder named `tests\__fixtures__` is created .after first execution of the tests. The next execution is not going to hit external API any more, but relies on these fixtures to execute the test.
+Thus, the package `vcrpy` is usded. This package records the reply of external API and replays it for future executions. You may notice that a folder named `tests\__fixtures__` is created after first execution of the tests. The next execution does not hit the external API any more, but relies on these fixtures to execute the test.
 
 To explicitly invalidate the fixtures, just delete this folder and the next execution will create new fixtures based on actual data coming from external services.
 
@@ -97,7 +94,7 @@ To explicitly invalidate the fixtures, just delete this folder and the next exec
 
 ```
 
-**GET /ping**
+**GET /v1/ping**
 ----
   Handshake API
 * **URL Params**  
@@ -115,7 +112,7 @@ To explicitly invalidate the fixtures, just delete this folder and the next exec
 }
 ```
 
-**GET /movies**
+**GET /v1/movies**
 ----
   Returns all movies in the Ghibli Studio system, matched with involved people
 * **URL Params**  

@@ -22,7 +22,7 @@ def test_fetch_movie_from_external_api():
     """ Test GhiblibAPI can fetch films data properly
     """
     ghibli_api = GhibliAPI(base_url="https://ghibliapi.herokuapp.com")
-    all_films = ghibli_api.get_all_films()
+    all_films = ghibli_api.get_all_films("/films")
     map(_assert_correct_film_format, all_films)
 
 
@@ -31,5 +31,5 @@ def test_fetch_people_from_external_api():
     """ Test GhiblibAPI can fetch people data properly
     """
     ghibli_api = GhibliAPI(base_url="https://ghibliapi.herokuapp.com")
-    all_people = ghibli_api.get_all_people()
+    all_people = ghibli_api.get_all_people("/people")
     map(_assert_correct_people_format, all_people)
