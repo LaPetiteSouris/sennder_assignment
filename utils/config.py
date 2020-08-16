@@ -10,6 +10,7 @@ if os.environ.get("CACHE") == "REDIS":
     CACHE_CONFIG = {
         "CACHE_REDIS_HOST": os.environ.get("CACHE_REDIS_HOST"),
         "CACHE_REDIS_PORT": os.environ.get("CACHE_REDIS_PORT"),
+        "CACHE_REDIS_PASSWORD": os.environ.get("CACHE_REDIS_PORT", ""),
         "CACHE_KEY_PREFIX": os.environ.get("CACHE_KEY_PREFIX", "sennder"),
         "CACHE_TYPE": "redis",
     }

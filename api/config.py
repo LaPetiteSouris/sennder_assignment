@@ -4,4 +4,4 @@ import os
 # Custom API config if needed
 
 HOST = os.getenv('HOST', 'localhost')
-PORT = int(os.getenv('PORT', 3000))
+PORT = int(os.getenv('PORT', 8000))

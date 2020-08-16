@@ -1,38 +1,101 @@
-## Bookworm
+## Execution and Deployment
 
-Project Bookworm is a book graph-based recommendation engine
+The project is delivered in containerized package with Docker.
 
-
-## Launching with Docker
+For deployment, build and push your image to Kubernetes.
+```
+docker build . -t sennder
+```
+Keep in mind the environment variables that have to be set
 
 ```
-sudo docker build -t souris/bookworm .
-sudo docker run -p 0.0.0.0:3000:3000 bookworm
-```
-
-
-## Populate sample DB
-```
-CREATE (user1:User {id:'user1'})
-CREATE (user2:User {id:'user2'})
-
-CREATE (Jules_Vernes:Author {name:'Jules Vernes'})
-CREATE (Around_the_World:Book {name:'Around the world in 80 days'})
-
-CREATE (user1)-[:like {weight:1}]->(Jules_Vernes)
-CREATE (user1)-[:like {weight:1}]->(Around_the_World)
-
-
-CREATE (user2)-[:like {weight:1}]->(Jules_Vernes)
-CREATE (user2)-[:like {weight:1}]->(Around_the_World)
-```
-
-## Book recommendation query
+    # if CACHE is not set to `REDIS`, in memory cache will be used, which is suitable only for DEV purpose
+    - CACHE="REDIS"
+    - CACHE_REDIS_HOST=<redis_host>
+    - CACHE_REDIS_PORT=<redis_port>
+    - CACHE_REDIS_PASSWORD=<redis_password>
+    - STUDIO_URL="https://ghibliapi.herokuapp.com"
+    - MOVIE_URL="/films"
+    - PEOPLE_URL="/people"
 
 ```
-MATCH (u:User)-[d:distance]-(:User)-[r:like]->(b:Book)
-WHERE u.id='user1'
-WITH *
-ORDER BY d.euclidean
-RETURN b
+
+If you just want to test locally, the please use `docker-compose`.
+
+Make sure `docker-compose` is available
+
 ```
+docker-compose -v
+```
+
+Then, in the root directory of the project, execute:
+
+```
+docker-compose build
+
+docker-compose up
+
+```
+Then the API is available on `localhost:8000` (depending on your docker-compose network)
+
+## API Contract
+### Movies 
+* Movies object
+```
+{
+    id: string,
+    title: string,
+    description: string,
+    director: string,
+    producer: string,
+    release_date: string,
+    rt_score: string,
+    people_involved: {
+        id(string): {
+            "id": string,
+            name: string,
+        }
+}
+
+```
+
+**GET /ping**
+----
+  Handshake API
+* **URL Params**  
+  None
+* **Data Params**  
+  None
+* **Headers**  
+  Content-Type: application/json  
+* **Success Response:**  
+* **Code:** 200  
+  **Content:**  
+```
+{
+  response: pong
+}
+```
+
+**GET /movies**
+----
+  Returns all movies in the Ghibli Studio system, matched with involved people
+* **URL Params**  
+  None
+* **Data Params**  
+  None
+* **Headers**  
+  Content-Type: application/json  
+* **Success Response:**  
+* **Code:** 200  
+  **Content:**  
+```
+# Each movie is stored separately, with key is the movie ID
+
+{
+  movie_id: {<movie_object>}
+}
+```
+* **Error Response:**  
+  * **Code:** 501  
+  **Content:** `{ error : "An error occurs upon fetching data from external service" }` 
