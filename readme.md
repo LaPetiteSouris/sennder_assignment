@@ -30,13 +30,51 @@ docker-compose -v
 
 Then, in the root directory of the project, execute:
 
-```
+```shell
 docker-compose build
 
 docker-compose up
 
 ```
-Then the API is available on `localhost:8000` (depending on your docker-compose network)
+The API is available on `localhost:8000` (depending on your docker-compose network)
+
+## Tests
+
+General test strategies are:
+
+1. Test fetching raw data from external API
+2. Test logics to parse raw data to results correctly
+3. Test calling the API endpoints directly
+
+To execute test suits, either use the dedicated Docker container
+
+```shell
+docker build . -f Dockerfile_test -t sennder_test
+
+docker run sennder_test
+```
+Or install dependencies to execute the test in your virtual environment
+
+```shell
+pip3 install -r requirements.txt
+pip3 install -r requirements-test.txt
+
+
+pytest -v 
+```
+**NOTE**:  During the test execution, the programm will hit external API. Hitting external API everytime for test is considered to be a bad practice as:
+- Increase execution time
+- Increase network IO
+- Make the test's behavior non-deterministic and flaky
+
+Also, mocking external API is considered a bad practice as well:
+- We should not mock what we do not own
+- It makes our tests to depend a lot of hypothesis.
+- Evolvement is difficult
+
+Thus, the package `vcrpy` is usded. This package record the reply of external API and replay it for future execution. You may notice tht a folder named `tests\__fixtures__` is created .after first execution of the tests. The next execution is not going to hit external API any more, but relies on these fixtures to execute the test.
+
+To explicitly invalidate the fixtures, just delete this folder and the next execution will create new fixtures based on actual data coming from external services.
 
 ## API Contract
 ### Movies 

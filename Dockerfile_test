@@ -1,0 +1,11 @@
+FROM python:3.7.3-slim
+
+COPY . /sennder
+
+WORKDIR  /sennder
+
+RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements-test.txt
+
+
+CMD pytest -v 
