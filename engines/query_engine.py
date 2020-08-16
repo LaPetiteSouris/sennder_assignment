@@ -23,7 +23,7 @@ def get_film_id_from_url(url):
     return url.rsplit('films/', 1).pop()
 
 
-def build_film_index(film_data):
+def build_film_hashtable_index(film_data):
     """ Given the raw data of all films, build a hash table (dict)
     which each key is the film ID and content is the data of the film.
     Hash table has O(1) time complexity when querying, which is convenient in
@@ -37,15 +37,15 @@ def build_film_index(film_data):
         dict: a hash table (dict) which each key is the film ID and content
         is the data of the film
     """
-    films_to_people_index = {}
+    film_reference = {}
     for film in film_data:
-        films_to_people_index[film.get("id")] = film
+        film_reference[film.get("id")] = film
     log.debug("Parsed film data to build hashed table of films",
-              extra={"data": films_to_people_index})
-    return films_to_people_index
+              extra={"data": film_reference})
+    return film_reference
 
 
-def build_revert_index_from_people_to_movie(film_data, people_data):
+def link_every_person_to_relevant_films(film_data, people_data):
     """ Given the raw data of all films and all people build a hash table
     (dict) which each key is the film ID and content is the data of the film.
 
@@ -70,8 +70,8 @@ def build_revert_index_from_people_to_movie(film_data, people_data):
         films and the content is the data of that person
     """
     # First, from raw data of films, build
-    # a dict table to facilitate the query
-    films_to_people_index = build_film_index(film_data)
+    # a hash table to facilitate the query
+    films_reference = build_film_hashtable_index(film_data)
 
     for person in people_data:
         # Get relevant information of each person.
@@ -87,21 +87,21 @@ def build_revert_index_from_people_to_movie(film_data, people_data):
         #   "https://ghibliapi.herokuapp.com/films/0440483e-ca0e-4120-8c50-4c8cd9b965d6"
         # ]
 
-        involved_films = person.get("films", [])
-        for film_url in involved_films:
+        films_involved_in = person.get("films", [])
+        for film_url in films_involved_in:
             # stripe only the film ID
             film_id = get_film_id_from_url(film_url)
             # With this ID, trace back to the film index
             # and get the people_involved field of the
             # corresponding film
-            people_involved = films_to_people_index[film_id].get(
+            people_involved = films_reference[film_id].get(
                 "people_involved", {})
             # Add this person to the `people_involved` field of
             # the corresponding film
             people_involved[person_id] = person_data
-            films_to_people_index[film_id]["people_involved"] = people_involved
+            films_reference[film_id]["people_involved"] = people_involved
 
-    return films_to_people_index
+    return films_reference
 
 
 def fetch_data_from_ghibli(params=None):
@@ -166,6 +166,6 @@ def fetch_data_from_ghibli(params=None):
     people_data = ghibli_api.get_all_people(people_url=PEOPLE_URL)
     log.info(
         "Successfully fetched film data and people data from external server")
-    joined_film_people = build_revert_index_from_people_to_movie(
+    joined_film_people = link_every_person_to_relevant_films(
         film_data, people_data)
     return joined_film_people

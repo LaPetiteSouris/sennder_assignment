@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from engines.query_engine import build_revert_index_from_people_to_movie, \
-    get_film_id_from_url, build_film_index
+from engines.query_engine import link_every_person_to_relevant_films, \
+    get_film_id_from_url, build_film_hashtable_index
 
 sample_get_all_films_response = [{
     "id": "if_of_film_one_piece",
@@ -98,7 +98,7 @@ def test_build_film_index():
     """
     # given sample film data
     # build hash table refer to film ID
-    index = build_film_index(sample_get_all_films_response)
+    index = build_film_hashtable_index(sample_get_all_films_response)
     expected_results = {
         "id_of_film_harry_potter": {
             "id": "id_of_film_harry_potter",
@@ -142,7 +142,7 @@ def test_join_movies_with_people():
     # Harry Potter and John Smith
 
     # Perform the join of 2 datasets
-    joined_movies_people_data = build_revert_index_from_people_to_movie(
+    joined_movies_people_data = link_every_person_to_relevant_films(
         sample_get_all_films_response, sample_get_all_people_response)
 
     # Expect that Vinsmoke Sanji and Monkey D.Luffy are in One Piece film
